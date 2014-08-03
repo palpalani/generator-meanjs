@@ -4,13 +4,13 @@
  */
 var init = require('./config/init')(),
 	config = require('./config/config'),
-	mongoose = require('mongoose');
+	db = require('./config/sequelize').sequelize;
 
 /**
  * Main application entry file.
  * Please note that the order of loading is important.
  */
-
+/*
 // Bootstrap db connection
 var db = mongoose.connect(config.db, function(err) {
 	if (err) {
@@ -18,6 +18,7 @@ var db = mongoose.connect(config.db, function(err) {
 		console.log(err);
 	}
 });
+*/
 
 // Init the express application
 var app = require('./config/express')(db);

@@ -12,9 +12,13 @@ var express = require('express'),
 	cookieParser = require('cookie-parser'),
 	helmet = require('helmet'),
 	passport = require('passport'),
-	mongoStore = require('connect-mongo')({
-		session: session
-	}),
+	SequelizeStore = require('connect-sequelize')(session),
+	    modelName = 'Session',
+	    options = {
+		updatedAt: 'modifiedAt',
+		tableName: 'tbl_Session',
+		freezeTableName: true
+	    },
 	flash = require('connect-flash'),
 	config = require('./config'),
 	consolidate = require('consolidate'),
@@ -23,12 +27,12 @@ var express = require('express'),
 module.exports = function(db) {
 	// Initialize express app
 	var app = express();
-
+	/*
 	// Globbing model files
-	config.getGlobbedFiles('./app/models/**/*.js').forEach(function(modelPath) {
+	config.getGlobbedFiles('./app/models/** /*.js').forEach(function(modelPath) {
 		require(path.resolve(modelPath));
 	});
-
+	*/
 	// Setting application local variables
 	app.locals.title = config.app.title;
 	app.locals.description = config.app.description;
@@ -84,16 +88,12 @@ module.exports = function(db) {
 
 	// CookieParser should be above session
 	app.use(cookieParser());
-
-	// Express MongoDB session storage
+	
+	// Express Sequelize session storage
 	app.use(session({
-		saveUninitialized: true,
-		resave: true,
-		secret: config.sessionSecret,
-		store: new mongoStore({
-			db: db.connection.db,
-			collection: config.sessionCollection
-		})
+	  secret: config.sessionSecret,
+	  store: new SequelizeStore(db, options, modelName),
+	  proxy: true // if you do SSL outside of node.
 	}));
 
 	// use passport session

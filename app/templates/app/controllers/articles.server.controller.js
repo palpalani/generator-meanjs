@@ -3,9 +3,10 @@
 /**
  * Module dependencies.
  */
-var mongoose = require('mongoose'),
+
+var db = require('./../../config/sequelize'),
 	errorHandler = require('./errors'),
-	Article = mongoose.model('Article'),
+	Article = db.model('Article'),
 	_ = require('lodash');
 
 /**
